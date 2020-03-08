@@ -4,7 +4,7 @@ env:
   global:
   - ROLE_NAME: haya-monitoring
 install:
-- pip install molecule docker
+- pip install molecule==2.22 docker
 - chmod +x docker-playbook-test.sh
 before_script:
 - cd ../
