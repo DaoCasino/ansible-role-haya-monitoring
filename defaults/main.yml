@@ -1,0 +1,55 @@
+---
+# Global installtation variables
+haya_monitoring_install_cadvisor: true
+haya_monitoring_install_exporter: true
+haya_monitoring_install_gateway: true
+haya_monitoring_install_prometheus: true
+haya_monitoring_install_grafana: true
+
+# Grafana
+haya_monitoring_grafana_port: 3000
+haya_monitoring_grafana_version: 6.0.2
+haya_monitoring_grafana_admin_user: admin
+haya_monitoring_grafana_admin_password: admin
+haya_monitoring_grafana_config_path: /etc/grafana
+haya_monitoring_grafana_data: /opt/grafana/data
+
+# Prometheus
+haya_monitoring_prometheus_port: 9090
+haya_monitoring_prometheus_docker_network: prometheus
+haya_monitoring_prometheus_additional_command_args: ''
+haya_monitoring_prometheus_version: v2.13.0
+haya_monitoring_prometheus_config_path: /etc/prometheus
+haya_monitoring_prometheus_data: /opt/prometheus/data
+haya_monitoring_prometheus_static_targets:
+  - 'localhost:9090'
+haya_monitoring_prometheus_targets:
+  - jobname: "gateway"
+    host: "localhost"
+    port: "{{ haya_monitoring_push_gateway_port }}"
+  - jobname: "node_exporter"
+    host: "localhost"
+    port: "{{ haya_monitoring_node_exporter_port}}"
+  - jobname: "cadvisor"
+    host: "localhost"
+    port: "{{ haya_monitoring_cadvisor_port }}"
+haya_monitoring_prometheus_alertmanagers: []
+
+# Node exporter
+haya_monitoring_node_exporter_port: 9100
+haya_monitoring_node_exporter_version: v0.18.1
+haya_monitoring_node_exporter_args:
+  - '--path.procfs=/host/proc'
+  - '--path.rootfs=/rootfs'
+  - '--path.sysfs=/host/sys'
+  - '--collector.filesystem.ignored-mount-points'
+  - '^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)'
+
+# Push gateway
+haya_monitoring_push_gateway_version: v0.7.0
+haya_monitoring_push_gateway_port: 9091
+
+# CAdvisor
+haya_monitoring_cadvisor_port: 8080
+haya_monitoring_cadvisor_version: v0.33.0
+haya_monitoring_cavdisor_args: ""

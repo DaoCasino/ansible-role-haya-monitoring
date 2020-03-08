@@ -1,0 +1,31 @@
+global:
+  scrape_interval:     {{ scrape_interval | default('5s') }}
+  evaluation_interval: {{ evaluation_interval | default('5s') }}
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: {{ haya_monitoring_prometheus_static_targets | to_json }}
+
+{% for item in haya_monitoring_prometheus_targets %}
+  - job_name: '{{ item.jobname }}'
+    scrape_interval: {{ item.scrape_interval | default('5s') }}
+    metrics_path: {{ item.metrics_path | default('/metrics') }}
+    static_configs:
+    - targets: ['{{ item.host }}:{{ item.port}}']
+
+{% endfor %}
+  - job_name: additional targets
+    file_sd_configs:
+    - files:
+      - "{{ haya_monitoring_prometheus_config_path }}/targets/*.yml"
+
+rule_files:
+  - {{ haya_monitoring_prometheus_config_path }}/alerts/*.rules
+
+{% if haya_monitoring_prometheus_alertmanagers | length > 0 %}
+alerting:
+  alertmanagers:
+  {{ haya_monitoring_prometheus_alertmanagers | to_nice_yaml(indent=2) | indent(2, False) }}
+{% endif %}
+

@@ -1,0 +1,27 @@
+---
+- name: Launch cadvisor container
+  become: true
+  docker_container:
+    image: "google/cadvisor:{{ haya_monitoring_cadvisor_version }}"
+    name: cadvisor
+    privileged: true
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:rw"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "/cgroup:/cgroup:ro"
+    network_mode: host
+    command: "{{ haya_monitoring_cavdisor_args }}"
+    restart_policy: always
+    state: started
+
+- name: Check cadvisor API works
+  uri:
+    url: http://localhost:{{ haya_monitoring_cadvisor_port }}
+    method: GET
+    status_code: 200
+  register: httpresponse
+  until: httpresponse.status == 200
+  retries: 15
+  delay: 5

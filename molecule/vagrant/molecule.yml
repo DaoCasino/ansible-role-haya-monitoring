@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+lint:
+  name: yamllint
+platforms:
+  - name: ubuntu-instance
+    box: ubuntu/bionic64
+    cpus: 2
+    memory: 1024
+  - name: centos-instance
+    box: centos/7
+    cpus: 2
+    memory: 1024
+provisioner:
+  name: ansible
+  playbooks:
+    prepare:  ../resources/playbooks/prepare.yml
+    converge: ../resources/playbooks/playbook.yml
+  lint:
+    name: ansible-lint
+verifier:
+  name: testinfra
+  directory: ../resources/tests/
+  lint:
+    name: flake8

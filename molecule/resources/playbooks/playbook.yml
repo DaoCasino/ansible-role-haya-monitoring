@@ -1,0 +1,13 @@
+---
+- name: Collect facts
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Gathering Facts
+      setup:
+- name: Converge
+  hosts: all
+  become: true
+  roles:
+    - role: haya-monitoring

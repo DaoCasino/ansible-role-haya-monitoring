@@ -1,0 +1,24 @@
+---
+- name: Launch node-exporter container
+  become: true
+  docker_container:
+    name: node-exporter
+    command: "{{ haya_monitoring_node_exporter_args }}"
+    privileged: true
+    detach: true
+    image: "prom/node-exporter:{{ haya_monitoring_node_exporter_version }}"
+    network_mode: host
+    restart_policy: always
+    state: started
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+
+- name: Check node-exporter API works
+  uri:
+    url: http://localhost:{{ haya_monitoring_node_exporter_port }}
+    method: GET
+    status_code: 200
+  retries: 15
+  delay: 5

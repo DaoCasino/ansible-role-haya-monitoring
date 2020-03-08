@@ -1,0 +1,54 @@
+---
+- name: Create prometheus config dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0777'
+  with_items:
+    - "{{ haya_monitoring_prometheus_config_path }}"
+    - "{{ haya_monitoring_prometheus_config_path }}/targets"
+    - "{{ haya_monitoring_prometheus_config_path }}/alerts"
+    - "{{ haya_monitoring_prometheus_data }}"
+
+- name: Set prometheus config
+  template:
+    src: configs/prometheus/prometheus.yml.j2
+    dest: "{{ haya_monitoring_prometheus_config_path }}/prometheus.yml"
+    force: true
+  register: prometheus_configuration
+
+- name: create docker network
+  become: true
+  docker_network:
+    name: "{{ haya_monitoring_prometheus_docker_network }}"
+    state: present
+
+- name: Launch docker prometheus
+  become: true
+  docker_container:
+    command: >
+      --config.file=/etc/prometheus/prometheus.yml
+      --storage.tsdb.path=/prometheus
+      --web.console.libraries=/usr/share/prometheus/console_libraries
+      --web.console.templates=/usr/share/prometheus/consoles
+      {{ haya_monitoring_prometheus_additional_command_args }}
+    image: prom/prometheus:{{ haya_monitoring_prometheus_version }}
+    name: prometheus
+    detach: true
+    network_mode: host
+    recreate: "{{ prometheus_configuration.changed }}"
+    restart_policy: always
+    state: started
+    volumes:
+      - "{{ haya_monitoring_prometheus_config_path }}/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "{{ haya_monitoring_prometheus_config_path }}/targets:/etc/prometheus/targets/:ro"
+      - "{{ haya_monitoring_prometheus_config_path }}/alerts/:/etc/prometheus/alerts/:ro"
+      - "{{ haya_monitoring_prometheus_data }}:/prometheus:rw"
+
+- name: Check prometheus API works
+  uri:
+    url: http://localhost:{{ haya_monitoring_prometheus_port }}
+    method: GET
+    status_code: [200, 405]
+  retries: 15
+  delay: 5

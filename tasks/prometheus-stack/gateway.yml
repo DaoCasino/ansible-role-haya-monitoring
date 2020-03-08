@@ -1,0 +1,19 @@
+---
+- name: Launch prometheus push gateway
+  become: true
+  docker_container:
+    name: push-gateway
+    privileged: true
+    detach: true
+    image: "prom/pushgateway:{{ haya_monitoring_push_gateway_version }}"
+    network_mode: host
+    restart_policy: always
+    state: started
+
+- name: Check gateway API works
+  uri:
+    url: http://localhost:{{ haya_monitoring_push_gateway_port }}
+    method: GET
+    status_code: 200
+  retries: 15
+  delay: 5

@@ -1,0 +1,21 @@
+- name: Install epel
+  include_role:
+    name: geerlingguy.repo-epel
+  when: ansible_os_family == 'RedHat'
+
+- name: Install docker
+  include_role:
+    name: '{{ roleinputvar }}'
+  loop:
+    - geerlingguy.docker
+    - geerlingguy.pip
+  loop_control:
+    loop_var: roleinputvar
+
+- name: install python-docker
+  pip:
+    name:
+    - docker
+
+- name: Install prometheus-stack
+  include_tasks: "prometheus-stack.yml"

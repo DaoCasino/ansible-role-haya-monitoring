@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  name: haya-monitoring
+  author: Alexey Pishchulin
+  description: Setup haya blockchain monitoring omponents.
+  company: MixBytes
+
+  license: Apache 2.0
+
+  min_ansible_version: 2.7
+
+  github_branch: master
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic64
+    - name: EL
+      versions:
+        - 7
+
+  galaxy_tags:
+    - bench
+    - blockchain
+
+dependencies: []
