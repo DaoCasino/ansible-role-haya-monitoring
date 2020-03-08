@@ -10,6 +10,9 @@ before_script:
 - cd ../
 - mv ansible-role-$ROLE_NAME $ROLE_NAME
 - cd $ROLE_NAME
-- ./docker-playbook-test.sh
+- "./docker-playbook-test.sh"
 script:
 - molecule test
+notifications:
+  slack:
+    secure: gy3Jerf/TJSQieAzjkOqaNFyUt8qWWsMCGi0oWmNQ+7p4/mInamJONJzvKQWBoG62x/An47m/fM54Q2lZfUhxwMcum8/qKJGB2p1H8XAvZH3IVh1v/7c14WKOgW2FlCQVIj/gpAZaRClKbmBesZx74ceXylghj8rhlRujpdF2dTx1U/6HytyNmOfo+DjYnR8LXsmsyXbvh36x14DW2H12fvyUy66XRWCqGOW4LuIZamWAQO0iOPk5ZlQZkjnlu/fx7hpHRbNdSaJvaVwQ8sKjn8Gu55e8NbBw3oDqL0UTGwqWlGCGI4WYG7EmmZLeud5EIMX+541rx3Z+5bwfv6FTpftFsG1CNJU4kNyo9ZkAdG4aTlNrkz6aTg+cPmlFQgRor2ZfIJ+UBmyhaJtm7rWXHkvPSu+4c95eVXUiC8Wi0eamcrW9pwWz9DdwNAGivwYfNrgITpVsMXIAIdtbV9qT03vQO0KFFfm/aM9lJJ3ekXSBobO5K68kaA//DEs8hPFV46LtT1AwmcJ+JtW2x5Nyw0tEz9NVbkoOf1AK0eXQDff59kIBTxAt4cYfDRaeororIP80EBdcZwKHXU2I+tsk6eOmRgufq8pc5qoLIo3myFA7bBa0jrYtjuCSoP/fbjgKpNMtuyrm3i+V1h5pbTuxs/puuW/7PK7294Zb3iqsqQ=
