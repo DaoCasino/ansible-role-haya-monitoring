@@ -1,2 +1,5 @@
 ---
-# handlers file for haya-monitoring
+- name: restart alertmanager
+  docker_container:
+    name: "alertmanager"
+    restart: true

@@ -1,0 +1,38 @@
+---
+- name: Create alertmanager config dir
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ haya_monitoring_alertmanager_config_path }}"
+
+- name: Set alertmanager config
+  template:
+    src: alertmanager/config.yml.j2
+    dest: "{{ haya_monitoring_alertmanager_config_path }}/config.yml"
+    force: true
+  notify: restart alertmanager
+
+- name: Launch docker alertmanager
+  become: true
+  docker_container:
+    command: >
+      --config.file={{ haya_monitoring_alertmanager_config_path }}/config.yml
+      --storage.path=/alertmanager
+      {{ haya_monitoring_alertmanager_additional_command_args }}
+    image: prom/alertmanager:{{ haya_monitoring_alertmanager_version }}
+    name: alertmanager
+    detach: true
+    network_mode: host
+    restart_policy: always
+    state: started
+    volumes:
+      - "{{ haya_monitoring_alertmanager_config_path }}/config.yml:/etc/alertmanager/config.yml:ro"
+
+- name: Check alertmanager API works
+  uri:
+    url: http://localhost:{{ haya_monitoring_alertmanager_port }}
+    method: GET
+    status_code: [200, 405]
+  retries: 15
+  delay: 5

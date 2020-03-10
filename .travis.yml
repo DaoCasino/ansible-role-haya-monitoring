@@ -12,6 +12,8 @@ before_script:
 - cd $ROLE_NAME
 - "./docker-playbook-test.sh"
 script:
+- molecule --version
+- ansible --version
 - molecule test
 notifications:
   slack:

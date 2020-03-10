@@ -23,10 +23,10 @@ def test_docker(host):
 
 
 @pytest.mark.parametrize('file, content', [
-  ("/etc/prometheus/prometheus.yml", "/etc/prometheus/targets/*.yml"),
-  ("/etc/prometheus/prometheus.yml", "/etc/prometheus//alerts/*.rules")
+  ("/etc/prometheus/prometheus.yml", "/etc/prometheus/targets/\\*.yml"),
+  ("/etc/prometheus/prometheus.yml", "/etc/prometheus/alerts/\\*.rules")
 ])
-def test_config_dir_exists(host, file, content):
+def test_config_exists(host, file, content):
     file = host.file(file)
 
     assert file.exists

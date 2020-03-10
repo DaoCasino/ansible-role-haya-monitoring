@@ -1,4 +1,14 @@
 ---
+- name: Create grafana config dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0777'
+  with_items:
+    - "{{ haya_monitoring_grafana_data }}"
+    - "{{ haya_monitoring_grafana_config_path }}/datasources"
+    - "{{ haya_monitoring_grafana_config_path }}/dashboards"
+
 - name: Launch grafana prometheus
   become: true
   docker_container:
@@ -18,3 +28,32 @@
       - "{{ haya_monitoring_grafana_data }}:/var/lib/grafana"
       - "{{ haya_monitoring_grafana_config_path }}/datasources:/etc/grafana/datasources"
       - "{{ haya_monitoring_grafana_config_path }}/dashboards:/etc/grafana/dashboards"
+
+- name: Check grafana works
+  uri:
+    url: http://localhost:{{ haya_monitoring_grafana_port }}
+    method: GET
+    status_code: [200, 405]
+  retries: 15
+  delay: 5
+
+- name: Copy dashboards
+  copy:
+    src: "{{ haya_monitoring_grafana_dashboards_path }}/"
+    dest: "/tmp/grafana/dashboards"
+
+- name: Get dashboard files on remote machine
+  find:
+    paths: "/tmp/grafana/dashboards"
+  register: dashboard_files
+
+- name: Import Grafana dashboards
+  grafana_dashboard:
+    grafana_url: "http://localhost:{{ haya_monitoring_grafana_port }}"
+    grafana_user: "{{ haya_monitoring_admin_user }}"
+    grafana_password: "{{ haya_monitoring_admin_password }}"
+    state: present
+    commit_message: "Imported by ansible - {{ item.path | basename }}"
+    overwrite: yes
+    path: "{{ item.path }}"
+  with_items: "{{ dashboard_files.files }}"

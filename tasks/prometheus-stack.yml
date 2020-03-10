@@ -18,3 +18,7 @@
 - name: Install grafana
   include_tasks: "prometheus-stack/grafana.yml"
   when: haya_monitoring_install_grafana|bool
+
+- name: Install alertmanager
+  include_tasks: "prometheus-stack/alertmanager.yml"
+  when: haya_monitoring_install_alertmanager|bool

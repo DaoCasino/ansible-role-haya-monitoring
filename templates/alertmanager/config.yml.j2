@@ -1,0 +1,10 @@
+# ansible managed
+
+{% if haya_monitoring_alertmanager_receivers != [] %}
+receivers:
+{{ haya_monitoring_alertmanager_receivers | to_nice_yaml(indent=2) }}
+{% endif %}
+
+route:
+  {{ haya_monitoring_alertmanager_route | to_nice_yaml(indent=2) | indent(2, False) }}
+
