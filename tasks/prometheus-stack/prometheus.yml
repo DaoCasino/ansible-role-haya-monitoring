@@ -27,7 +27,7 @@
     - target_ip: "{{ item.ip }}"
     - target_labels: "{{ item.labels | default([]) }}"
 
-- name: "Configure alert rules"
+- name: Configure alert rules
   template:
     src: "prometheus/alert.rules.j2"
     dest: "/etc/prometheus/alerts/main.rules"
