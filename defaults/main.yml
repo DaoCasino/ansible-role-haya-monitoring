@@ -7,10 +7,12 @@ haya_monitoring_install_prometheus: true
 haya_monitoring_install_grafana: true
 haya_monitoring_install_alertmanager: true
 haya_monitoring_install_prometheus-tg-bot: true
+haya_monitoring_install_graylog: true
+haya_monitoring_install_prometheus_tg_bot: true
 
 # Grafana
-x`: 3000
-haya_monitoring_grafana_version: 6.0.2
+haya_monitoring_grafana_port: 3000
+haya_monitoring_grafana_version: 6.6.2
 haya_monitoring_grafana_admin_user: admin
 haya_monitoring_grafana_admin_password: admin
 haya_monitoring_grafana_config_path: /etc/grafana
@@ -45,7 +47,7 @@ haya_monitoring_prometheus_alert_rules:
       severity: critical
     annotations:
       summary: "Monitor service non-operational"
-      description: "Service {{ $labels.instance }} is down."
+      description: "{% raw %}Service {{ $labels.instance }} is down.{% endraw %}"
 
 # Node exporter
 haya_monitoring_node_exporter_port: 9100
@@ -78,3 +80,9 @@ haya_monitoring_alertmanager_route:
 
 # Prometheus-tg-bot
 haya_monitoring_prometheus_tg_bot_config_path: /etc/prometheus
+haya_monitoring_prometheus_tg_bot_token: ""
+haya_monitoring_prometheus_tg_bot_port: 9977
+
+# Graylog
+haya_monitoring_graylog_es_port: 9200
+haya_monitoring_graylog_mongo_port: 27017

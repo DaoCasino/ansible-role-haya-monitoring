@@ -3,19 +3,29 @@
     name: geerlingguy.repo-epel
   when: ansible_os_family == 'RedHat'
 
+- name: install pip
+  include_role:
+    name: geerlingguy.pip
+    apply:
+      become: yes
+  vars:
+    pip_install_packages:
+      - name: docker
+      - name: docker-compose==1.22.0
+
 - name: Install docker
+  vars:
+    docker_compose_path: /usr/bin/docker-compose
   include_role:
     name: '{{ roleinputvar }}'
   loop:
     - geerlingguy.docker
-    - geerlingguy.pip
   loop_control:
     loop_var: roleinputvar
 
-- name: install python-docker
-  pip:
-    name:
-    - docker
-
 - name: Install prometheus-stack
   include_tasks: "prometheus-stack.yml"
+
+- name: Install graylog
+  include_tasks: "graylog.yml"
+  when: haya_monitoring_install_graylog|bool

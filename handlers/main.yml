@@ -8,3 +8,9 @@
   docker_container:
     name: "prometheus-bot"
     restart: true
+
+- name: restart graylog
+  docker_compose:
+    project_name: "graylog"
+    project_src: "/opt/graylog"
+    restarted: yes

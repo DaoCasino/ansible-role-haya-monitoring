@@ -10,7 +10,7 @@
   template:
     src: "prometheus/telegram-bot.yml.j2"
     dest: "{{ haya_monitoring_prometheus_tg_bot_config_path }}/telegram-bot.yml"
-    force: true
+    mode: 0640
   notify: restart prometheus-tg-bot
 
 - name: Copy prometheus-tg-bot files
@@ -25,7 +25,7 @@
     command: >
       /prometheus_bot
       -c /etc/prometheus/telegram-bot.yml
-      -l 127.0.0.1:{{ prometheus_tg_bot_port }}
+      -l 127.0.0.1:{{ haya_monitoring_prometheus_tg_bot_port }}
     image: mixbytes/prometheus-bot
     name: prometheus-bot
     detach: true

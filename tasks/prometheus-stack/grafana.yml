@@ -39,8 +39,9 @@
 
 - name: Copy dashboards
   copy:
-    src: "{{ haya_monitoring_grafana_dashboards_path }}/"
-    dest: "/tmp/grafana/dashboards"
+    src: "{{ item }}"
+    dest: "/tmp/grafana/dashboards/"
+  with_fileglob: "{{ haya_monitoring_grafana_dashboards_path }}"
 
 - name: Get dashboard files on remote machine
   find:
@@ -50,8 +51,8 @@
 - name: Import Grafana dashboards
   grafana_dashboard:
     grafana_url: "http://localhost:{{ haya_monitoring_grafana_port }}"
-    grafana_user: "{{ haya_monitoring_admin_user }}"
-    grafana_password: "{{ haya_monitoring_admin_password }}"
+    grafana_user: "{{ haya_monitoring_grafana_admin_user }}"
+    grafana_password: "{{ haya_monitoring_grafana_admin_password }}"
     state: present
     commit_message: "Imported by ansible - {{ item.path | basename }}"
     overwrite: yes

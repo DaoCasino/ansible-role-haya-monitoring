@@ -1,0 +1,40 @@
+---
+- name: Create graylog config dir
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "/etc/graylog"
+    - "/opt/graylog"
+
+- name: Set graylog config
+  template:
+    src: "graylog/graylog.conf.j2"
+    dest: "/etc/graylog/graylog.conf"
+    force: true
+  notify: restart graylog
+
+- name: Copy docker compose file
+  copy:
+    src: "graylog/docker-compose.yml"
+    dest: "/opt/graylog/docker-compose.yml"
+
+- name: Create docker volume for mongo
+  docker_volume:
+    name: graylog_mongo_data
+    state: present
+
+- name: Create docker volume for graylog
+  docker_volume:
+    name: graylog_graylog_journal
+    state: present
+
+- name: Create docker volume for elasticsearch
+  docker_volume:
+    name: graylog_es_data
+    state: present
+
+- name: Launch docker graylog stack
+  docker_compose:
+    project_name: graylog
+    project_src: "/opt/graylog"

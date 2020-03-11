@@ -25,4 +25,4 @@
 
 - name: Install prometheus-bot
   include_tasks: "prometheus-stack/prometheus-tg-bot.yml"
-  when: haya_monitoring_install_prometheus-tg-bot|bool
+  when: haya_monitoring_install_prometheus_tg_bot|bool
